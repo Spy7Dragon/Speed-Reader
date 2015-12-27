@@ -71,7 +71,7 @@ public class ReaderForm{
 		final JLabel lblText = new JLabel("Text");
 		lblText.setHorizontalAlignment(SwingConstants.CENTER);
 		lblText.setFont(new Font("Times New Roman", Font.BOLD, 18));
-		lblText.setBounds(10, 103, 414, 14);
+		lblText.setBounds(10, 97, 414, 29);
 		frame.getContentPane().add(lblText);
 
 		JButton btnStart = new JButton("Start");
@@ -180,7 +180,9 @@ public class ReaderForm{
 			{
 				if (stream != null)
 				{
-					lblText.setText(stream.next());
+					if (stream.hasNext()){
+						lblText.setText(stream.next());
+					}
 				}
 			}
 		};
