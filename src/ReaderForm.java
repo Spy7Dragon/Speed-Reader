@@ -16,12 +16,18 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.awt.event.ActionEvent;
 import javax.swing.JPanel;
+import javax.swing.JEditorPane;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.JCheckBox;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 
 public class ReaderForm{
 
 	private JFrame frame;
 	/**
-	 * @wbp.nonvisual location=50,369
+	 * @wbp.nonvisual location=50,469
 	 */
 	private final JPanel panel = new JPanel();
 	private File selectedFile = null;
@@ -59,7 +65,7 @@ public class ReaderForm{
 		fc.setCurrentDirectory(new File(System.getProperty("user.home")));
 
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setBounds(100, 100, 450, 436);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
@@ -71,7 +77,7 @@ public class ReaderForm{
 		final JLabel lblText = new JLabel("Text");
 		lblText.setHorizontalAlignment(SwingConstants.CENTER);
 		lblText.setFont(new Font("Times New Roman", Font.BOLD, 18));
-		lblText.setBounds(10, 97, 414, 29);
+		lblText.setBounds(10, 48, 414, 29);
 		frame.getContentPane().add(lblText);
 
 		JButton btnStart = new JButton("Start");
@@ -81,7 +87,7 @@ public class ReaderForm{
 			}
 		});
 		btnStart.setFont(new Font("Times New Roman", Font.BOLD, 12));
-		btnStart.setBounds(10, 215, 89, 23);
+		btnStart.setBounds(10, 116, 89, 23);
 		frame.getContentPane().add(btnStart);
 
 		JButton btnStop = new JButton("Stop");
@@ -91,8 +97,24 @@ public class ReaderForm{
 			}
 		});
 		btnStop.setFont(new Font("Times New Roman", Font.BOLD, 12));
-		btnStop.setBounds(335, 215, 89, 23);
+		btnStop.setBounds(335, 116, 89, 23);
 		frame.getContentPane().add(btnStop);
+		
+		JTextArea textArea = new JTextArea();
+		textArea.setBounds(10, 168, 414, 163);
+		JScrollPane scroll = new JScrollPane (textArea);
+		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		frame.getContentPane().add(textArea);
+		
+		frame.getContentPane().add(scroll);
+		
+		JButton btnNewButton = new JButton("Clear");
+		btnNewButton.setBounds(10, 342, 89, 23);
+		frame.getContentPane().add(btnNewButton);
+		
+		JCheckBox chckbxNewCheckBox = new JCheckBox("Use Copied Text");
+		chckbxNewCheckBox.setBounds(327, 342, 97, 23);
+		frame.getContentPane().add(chckbxNewCheckBox);
 
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
