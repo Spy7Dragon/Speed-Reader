@@ -11,8 +11,16 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 import java.awt.event.ActionEvent;
 import javax.swing.JPanel;
@@ -26,6 +34,7 @@ import javax.swing.JScrollPane;
 public class ReaderForm{
 
 	private JFrame frame;
+	boolean binary = false;
 	/**
 	 * @wbp.nonvisual location=50,469
 	 */
@@ -34,6 +43,9 @@ public class ReaderForm{
 	private static int speed = 600;
 	static Timer timer = null;
 	Scanner stream = null;
+	InputStream is = null;
+	BufferedReader bfReader = null;
+	byte[] bytes = null;
 	/**
 	 * Launch the application.
 	 */
@@ -71,7 +83,7 @@ public class ReaderForm{
 
 		final JLabel lblFileName = new JLabel("File Name");
 		lblFileName.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-		lblFileName.setBounds(10, 23, 414, 14);
+		lblFileName.setBounds(10, 11, 414, 14);
 		frame.getContentPane().add(lblFileName);
 
 		final JLabel lblText = new JLabel("Text");
@@ -102,19 +114,32 @@ public class ReaderForm{
 		
 		JTextArea textArea = new JTextArea();
 		textArea.setBounds(10, 168, 414, 163);
-		JScrollPane scroll = new JScrollPane (textArea);
-		scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		frame.getContentPane().add(textArea);
-		
-		frame.getContentPane().add(scroll);
+
 		
 		JButton btnNewButton = new JButton("Clear");
 		btnNewButton.setBounds(10, 342, 89, 23);
 		frame.getContentPane().add(btnNewButton);
 		
-		JCheckBox chckbxNewCheckBox = new JCheckBox("Use Copied Text");
-		chckbxNewCheckBox.setBounds(327, 342, 97, 23);
-		frame.getContentPane().add(chckbxNewCheckBox);
+		JCheckBox chckbxClear = new JCheckBox("Use Copied Text");
+		chckbxClear.setBounds(327, 342, 97, 23);
+		frame.getContentPane().add(chckbxClear);
+		
+		final JCheckBox chckbxBinary = new JCheckBox("Binary");
+		chckbxBinary.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (chckbxBinary.isSelected())
+				{
+					binary = true;
+				}
+				else
+				{
+					binary = false;
+				}
+			}
+		});
+		chckbxBinary.setBounds(327, 19, 97, 23);
+		frame.getContentPane().add(chckbxBinary);
 
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
@@ -135,11 +160,22 @@ public class ReaderForm{
 					}
 					selectedFile = fc.getSelectedFile();
 					lblFileName.setText(selectedFile.toString());
-					try {
-						stream = new Scanner(selectedFile);
-					} catch (FileNotFoundException e) {
+					if (!binary){
+						try {
+							stream = new Scanner(selectedFile);
+						} catch (FileNotFoundException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+							e.printStackTrace();
+						}
+					}
+					else{
+						Path path = selectedFile.toPath();
+						try {
+							bytes = Files.readAllBytes(path);
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
 			}
@@ -199,11 +235,28 @@ public class ReaderForm{
 		
 		ActionListener timerListener = new ActionListener(){
 			public void actionPerformed(ActionEvent e)
-			{
-				if (stream != null)
+			{	
+				if (!binary){
+					if (stream != null)
+					{
+						if (stream.hasNext()){
+							lblText.setText(stream.next());
+						}
+					}
+				}
+				else
 				{
-					if (stream.hasNext()){
-						lblText.setText(stream.next());
+					is = new ByteArrayInputStream(bytes);
+					bfReader = new BufferedReader(new InputStreamReader(is));
+					String temp = null;
+					try {
+						while ((temp = bfReader.readLine()) != null)
+						{
+							lblText.setText(temp);
+						}
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
 				}
 			}
