@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +31,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.JCheckBox;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.extractor.WordExtractor;
 
 public class ReaderForm{
 
@@ -43,9 +46,8 @@ public class ReaderForm{
 	private static int speed = 600;
 	static Timer timer = null;
 	Scanner stream = null;
-	InputStream is = null;
-	BufferedReader bfReader = null;
-	byte[] bytes = null;
+	WordExtractor extractor = null;
+	String[] fileData = null;
 	/**
 	 * Launch the application.
 	 */
@@ -89,7 +91,7 @@ public class ReaderForm{
 		final JLabel lblText = new JLabel("Text");
 		lblText.setHorizontalAlignment(SwingConstants.CENTER);
 		lblText.setFont(new Font("Times New Roman", Font.BOLD, 18));
-		lblText.setBounds(10, 48, 414, 29);
+		lblText.setBounds(10, 56, 414, 29);
 		frame.getContentPane().add(lblText);
 
 		JButton btnStart = new JButton("Start");
@@ -122,7 +124,7 @@ public class ReaderForm{
 		frame.getContentPane().add(btnNewButton);
 		
 		JCheckBox chckbxClear = new JCheckBox("Use Copied Text");
-		chckbxClear.setBounds(327, 342, 97, 23);
+		chckbxClear.setBounds(301, 342, 123, 23);
 		frame.getContentPane().add(chckbxClear);
 		
 		final JCheckBox chckbxBinary = new JCheckBox("Binary");
@@ -138,7 +140,7 @@ public class ReaderForm{
 				}
 			}
 		});
-		chckbxBinary.setBounds(327, 19, 97, 23);
+		chckbxBinary.setBounds(10, 33, 97, 23);
 		frame.getContentPane().add(chckbxBinary);
 
 		JMenuBar menuBar = new JMenuBar();
@@ -169,9 +171,11 @@ public class ReaderForm{
 						}
 					}
 					else{
-						Path path = selectedFile.toPath();
+						FileInputStream fis = new FileInputStream(selectedFile.getAbsolutePath());
+						HWPFDocument document = new HWPFDocument(fis);
+						extractor = new WordExtractor(document);
 						try {
-							bytes = Files.readAllBytes(path);
+							fileData = extractor.getParagraphText();
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -246,17 +250,12 @@ public class ReaderForm{
 				}
 				else
 				{
-					is = new ByteArrayInputStream(bytes);
-					bfReader = new BufferedReader(new InputStreamReader(is));
-					String temp = null;
-					try {
-						while ((temp = bfReader.readLine()) != null)
+					for (int i = 0; i < fileData.length; i++)
+					{
+						if (fileData[i] != null)
 						{
-							lblText.setText(temp);
+							lblText.setText(fileData[i]);
 						}
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
 					}
 				}
 			}
