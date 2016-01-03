@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry exported="true" kind="lib" path="C:/Users/Branden/workspace/Libraries/poi-scratchpad-3.5-FINAL.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="C:/Users/Branden/workspace/Libraries/poi-3.14-beta1/poi-3.14-beta1-20151223.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Branden/workspace/Libraries/poi-3.14-beta1/poi-ooxml-3.14-beta1-20151223.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Branden/workspace/Libraries/poi-3.14-beta1/poi-ooxml-schemas-3.14-beta1-20151223.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Branden/workspace/Libraries/poi-3.14-beta1/ooxml-lib/xmlbeans-2.6.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

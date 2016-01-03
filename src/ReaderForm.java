@@ -31,8 +31,8 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.JCheckBox;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import org.apache.poi.hwpf.HWPFDocument;
-import org.apache.poi.hwpf.extractor.WordExtractor;
+import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 public class ReaderForm{
 
@@ -46,8 +46,10 @@ public class ReaderForm{
 	private static int speed = 600;
 	static Timer timer = null;
 	Scanner stream = null;
-	WordExtractor extractor = null;
-	String[] fileData = null;
+	XWPFDocument document = null;
+	FileInputStream fis = null;
+	XWPFWordExtractor extractor = null;
+	String fileData = null;
 	/**
 	 * Launch the application.
 	 */
@@ -171,15 +173,23 @@ public class ReaderForm{
 						}
 					}
 					else{
-						FileInputStream fis = new FileInputStream(selectedFile.getAbsolutePath());
-						HWPFDocument document = new HWPFDocument(fis);
-						extractor = new WordExtractor(document);
+						
 						try {
-							fileData = extractor.getParagraphText();
-						} catch (IOException e) {
+							fis = new FileInputStream(selectedFile.getAbsolutePath());
+						} catch (FileNotFoundException e1) {
 							// TODO Auto-generated catch block
-							e.printStackTrace();
+							e1.printStackTrace();
 						}
+		
+						try {
+							document = new XWPFDocument(fis);
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+						XWPFWordExtractor extractor = new XWPFWordExtractor(document);
+						fileData = extractor.getText();
+						stream = new Scanner(fileData);
 					}
 				}
 			}
@@ -240,22 +250,10 @@ public class ReaderForm{
 		ActionListener timerListener = new ActionListener(){
 			public void actionPerformed(ActionEvent e)
 			{	
-				if (!binary){
-					if (stream != null)
-					{
-						if (stream.hasNext()){
-							lblText.setText(stream.next());
-						}
-					}
-				}
-				else
+				if (stream != null)
 				{
-					for (int i = 0; i < fileData.length; i++)
-					{
-						if (fileData[i] != null)
-						{
-							lblText.setText(fileData[i]);
-						}
+					if (stream.hasNext()){
+						lblText.setText(stream.next());
 					}
 				}
 			}
