@@ -31,24 +31,21 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.JCheckBox;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 
 public class ReaderForm{
 
 	private JFrame frame;
-	boolean binary = false;
-	/**
-	 * @wbp.nonvisual location=50,469
-	 */
 	private final JPanel panel = new JPanel();
 	private File selectedFile = null;
 	private static int speed = 600;
 	static Timer timer = null;
 	Scanner stream = null;
-	XWPFDocument document = null;
-	FileInputStream fis = null;
-	XWPFWordExtractor extractor = null;
 	String fileData = null;
 	/**
 	 * Launch the application.
@@ -128,22 +125,6 @@ public class ReaderForm{
 		JCheckBox chckbxClear = new JCheckBox("Use Copied Text");
 		chckbxClear.setBounds(301, 342, 123, 23);
 		frame.getContentPane().add(chckbxClear);
-		
-		final JCheckBox chckbxBinary = new JCheckBox("Binary");
-		chckbxBinary.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				if (chckbxBinary.isSelected())
-				{
-					binary = true;
-				}
-				else
-				{
-					binary = false;
-				}
-			}
-		});
-		chckbxBinary.setBounds(10, 33, 97, 23);
-		frame.getContentPane().add(chckbxBinary);
 
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
@@ -164,32 +145,44 @@ public class ReaderForm{
 					}
 					selectedFile = fc.getSelectedFile();
 					lblFileName.setText(selectedFile.toString());
-					if (!binary){
+					
+					String fileType = FilenameUtils.getExtension(selectedFile.getPath());
+					if (fileType.equals("docx")){
+						
+						try {
+							FileInputStream fis = new FileInputStream(selectedFile.getAbsolutePath());
+							XWPFDocument document = new XWPFDocument(fis);
+							XWPFWordExtractor extractor = new XWPFWordExtractor(document);
+							fileData = extractor.getText();
+							stream = new Scanner(fileData);
+						} catch (FileNotFoundException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+					else if(fileType.equals("doc"))
+					{
+						try {
+							InputStream fis = new FileInputStream(selectedFile.getAbsoluteFile());
+							HWPFDocument document = new HWPFDocument(fis);
+							WordExtractor extractor = new WordExtractor(document);
+							fileData = extractor.getText();
+							stream = new Scanner(fileData);
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}	
+					}
+					else{
 						try {
 							stream = new Scanner(selectedFile);
 						} catch (FileNotFoundException e) {
 						// TODO Auto-generated catch block
 							e.printStackTrace();
-						}
 					}
-					else{
-						
-						try {
-							fis = new FileInputStream(selectedFile.getAbsolutePath());
-						} catch (FileNotFoundException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-		
-						try {
-							document = new XWPFDocument(fis);
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-						XWPFWordExtractor extractor = new XWPFWordExtractor(document);
-						fileData = extractor.getText();
-						stream = new Scanner(fileData);
 					}
 				}
 			}
