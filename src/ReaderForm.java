@@ -33,6 +33,9 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
+import org.apache.pdfbox.text.PDFTextStripperByArea;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
@@ -175,6 +178,24 @@ public class ReaderForm{
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}	
+					}
+					else if (fileType.equals("pdf"))
+					{
+						try{
+							PDDocument document = PDDocument.load(selectedFile);
+							document.getClass();
+							if (!document.isEncrypted())
+							{
+								PDFTextStripperByArea stripper = new PDFTextStripperByArea();
+								stripper.setSortByPosition(true);
+								PDFTextStripper Tstripper = new PDFTextStripper();
+								stream = new Scanner(Tstripper.getText(document));
+							}
+						}
+						catch(Exception e)
+						{
+							e.printStackTrace();
+						}
 					}
 					else{
 						try {
