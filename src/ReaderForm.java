@@ -41,6 +41,8 @@ import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 import com.omt.epubreader.domain.Book;
 import com.omt.epubreader.domain.Epub;
@@ -173,7 +175,7 @@ public class ReaderForm{
 					else if(fileType.equals("doc"))
 					{
 						try {
-							InputStream fis = new FileInputStream(selectedFile.getAbsoluteFile());
+							InputStream fis = new FileInputStream(selectedFile.getAbsolutePath());
 							HWPFDocument document = new HWPFDocument(fis);
 							WordExtractor extractor = new WordExtractor(document);
 							fileData = extractor.getText();
@@ -207,11 +209,13 @@ public class ReaderForm{
 							Epub epubReader = new Epub();
 							Book book = epubReader.getBook(new FileInputStream(selectedFile.getAbsoluteFile()));
 							Enumeration e = book.getChaptersData().elements();
-							String theBook = "";
+							String theHTML = "";
 							while (e.hasMoreElements()){
-								theBook += (String) e.nextElement();
+								theHTML += (String) e.nextElement();
 							}
-							stream = new Scanner(theBook);
+							Document doc = Jsoup.parse(theHTML);
+							fileData = doc.text();
+							stream = new Scanner(fileData);
 						}
 						catch (FileNotFoundException e)
 						{
