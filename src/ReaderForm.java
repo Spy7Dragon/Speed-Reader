@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Enumeration;
 import java.util.Scanner;
 import java.awt.event.ActionEvent;
 import javax.swing.JPanel;
@@ -40,6 +41,9 @@ import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+
+import com.omt.epubreader.domain.Book;
+import com.omt.epubreader.domain.Epub;
 
 public class ReaderForm{
 
@@ -193,6 +197,23 @@ public class ReaderForm{
 							}
 						}
 						catch(Exception e)
+						{
+							e.printStackTrace();
+						}
+					}
+					else if (fileType.equals("epub"))
+					{
+						try {
+							Epub epubReader = new Epub();
+							Book book = epubReader.getBook(new FileInputStream(selectedFile.getAbsoluteFile()));
+							Enumeration e = book.getChaptersData().elements();
+							String theBook = "";
+							while (e.hasMoreElements()){
+								theBook += (String) e.nextElement();
+							}
+							stream = new Scanner(theBook);
+						}
+						catch (FileNotFoundException e)
 						{
 							e.printStackTrace();
 						}
