@@ -7,9 +7,9 @@
 	<classpathentry kind="lib" path="C:/Users/Branden/workspace/Libraries/poi-3.14-beta1/poi-ooxml-schemas-3.14-beta1-20151223.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Branden/workspace/Libraries/poi-3.14-beta1/ooxml-lib/xmlbeans-2.6.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Branden/workspace/Libraries/commons-io-2.4/commons-io-2.4.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Branden/workspace/Libraries/poi-scratchpad-3.5-FINAL.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Branden/workspace/Libraries/pdfbox-app-2.0.0-RC2.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Branden/workspace/Libraries/EpubReaderApi-omt2.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Branden/workspace/Libraries/jsoup-1.8.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Branden/workspace/Libraries/poi-scratchpad-3.13.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -57,7 +57,7 @@ public class ReaderForm{
 	private JFrame frame;
 	private final JPanel panel = new JPanel();
 	private File selectedFile = null;
-	private static int speed = 600;
+	private static int speed = 300;
 	static Timer timer = null;
 	Scanner stream = null;
 	String fileData = null;
@@ -160,9 +160,9 @@ public class ReaderForm{
 				}
 			}
 		});
-		textArea.setBounds(10, 168, 414, 163);
-		JScrollPane areaScrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		frame.getContentPane().add(textArea);
+		JScrollPane areaScrollPane = new JScrollPane(textArea);
+		areaScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		areaScrollPane.setBounds(10, 168, 414, 163);
 		frame.getContentPane().add(areaScrollPane);
 		JButton btnClear = new JButton("Clear");
 		btnClear.addActionListener(new ActionListener() {
@@ -179,6 +179,8 @@ public class ReaderForm{
 				if (chckbxCopiedText.isSelected())
 				{
 					copiedText = true;
+					fileData = textArea.getText();
+					stream = new Scanner(fileData);
 				}
 				else
 				{
@@ -218,6 +220,7 @@ public class ReaderForm{
 							XWPFWordExtractor extractor = new XWPFWordExtractor(document);
 							fileData = extractor.getText();
 							stream = new Scanner(fileData);
+							fis.close();
 						} catch (FileNotFoundException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -229,11 +232,12 @@ public class ReaderForm{
 					else if(fileType.equals("doc"))
 					{
 						try {
-							InputStream fis = new FileInputStream(selectedFile.getAbsolutePath());
+							FileInputStream fis = new FileInputStream(selectedFile.getAbsolutePath());
 							HWPFDocument document = new HWPFDocument(fis);
 							WordExtractor extractor = new WordExtractor(document);
 							fileData = extractor.getText();
 							stream = new Scanner(fileData);
+							fis.close();
 						} catch (IOException e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
@@ -298,7 +302,7 @@ public class ReaderForm{
 		JMenuItem mntmVeryFast = new JMenuItem("Very Fast");
 		mntmVeryFast.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				speed = 200;
+				speed = 100;
 				timer.setDelay(speed);
 			}
 		});
@@ -307,7 +311,7 @@ public class ReaderForm{
 		JMenuItem mntmFast = new JMenuItem("Fast");
 		mntmFast.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				speed = 400;
+				speed = 200;
 				timer.setDelay(speed);
 			}
 		});
@@ -316,7 +320,7 @@ public class ReaderForm{
 		JMenuItem mntmMedium = new JMenuItem("Medium");
 		mntmMedium.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				speed = 600;
+				speed = 300;
 				timer.setDelay(speed);
 			}
 		});
@@ -325,7 +329,7 @@ public class ReaderForm{
 		JMenuItem mntmSlow = new JMenuItem("Slow");
 		mntmSlow.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				speed = 800;
+				speed = 400;
 				timer.setDelay(speed);
 			}
 		});
@@ -334,7 +338,7 @@ public class ReaderForm{
 		JMenuItem mntmVerySlow = new JMenuItem("Very Slow");
 		mntmVerySlow.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				speed = 1000;
+				speed = 500;
 				timer.setDelay(speed);
 			}
 		});
