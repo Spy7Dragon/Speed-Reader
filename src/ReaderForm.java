@@ -1,3 +1,4 @@
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -5,6 +6,8 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuBar;
@@ -46,6 +49,8 @@ import org.jsoup.nodes.Document;
 
 import com.omt.epubreader.domain.Book;
 import com.omt.epubreader.domain.Epub;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 
 public class ReaderForm{
 
@@ -56,6 +61,7 @@ public class ReaderForm{
 	static Timer timer = null;
 	Scanner stream = null;
 	String fileData = null;
+	boolean copiedText = false;
 	/**
 	 * Launch the application.
 	 */
@@ -122,18 +128,66 @@ public class ReaderForm{
 		btnStop.setBounds(335, 116, 89, 23);
 		frame.getContentPane().add(btnStop);
 		
-		JTextArea textArea = new JTextArea();
-		textArea.setBounds(10, 168, 414, 163);
-		frame.getContentPane().add(textArea);
+		final JTextArea textArea = new JTextArea();
+		textArea.setWrapStyleWord(true);
+		textArea.setLineWrap(true);
+		textArea.getDocument().addDocumentListener(new DocumentListener()
+		{
+			public void changedUpdate(DocumentEvent arg0) {
+				// TODO Auto-generated method stub
+				if (copiedText)
+				{
+					fileData = textArea.getText();
+					stream = new Scanner(fileData);
+				}
+			}
 
+			public void insertUpdate(DocumentEvent arg0) {
+				// TODO Auto-generated method stub
+				if (copiedText)
+				{
+					fileData = textArea.getText();
+					stream = new Scanner(fileData);
+				}
+			}
+
+			public void removeUpdate(DocumentEvent arg0) {
+				// TODO Auto-generated method stub
+				if (copiedText)
+				{
+					fileData = textArea.getText();
+					stream = new Scanner(fileData);
+				}
+			}
+		});
+		textArea.setBounds(10, 168, 414, 163);
+		JScrollPane areaScrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		frame.getContentPane().add(textArea);
+		frame.getContentPane().add(areaScrollPane);
+		JButton btnClear = new JButton("Clear");
+		btnClear.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textArea.setText("");
+			}
+		});
+		btnClear.setBounds(10, 342, 89, 23);
+		frame.getContentPane().add(btnClear);
 		
-		JButton btnNewButton = new JButton("Clear");
-		btnNewButton.setBounds(10, 342, 89, 23);
-		frame.getContentPane().add(btnNewButton);
-		
-		JCheckBox chckbxClear = new JCheckBox("Use Copied Text");
-		chckbxClear.setBounds(301, 342, 123, 23);
-		frame.getContentPane().add(chckbxClear);
+		final JCheckBox chckbxCopiedText = new JCheckBox("Use Copied Text");
+		chckbxCopiedText.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (chckbxCopiedText.isSelected())
+				{
+					copiedText = true;
+				}
+				else
+				{
+					copiedText = false;
+				}
+			}
+		});
+		chckbxCopiedText.setBounds(301, 342, 123, 23);
+		frame.getContentPane().add(chckbxCopiedText);
 
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
@@ -288,7 +342,7 @@ public class ReaderForm{
 		
 		ActionListener timerListener = new ActionListener(){
 			public void actionPerformed(ActionEvent e)
-			{	
+			{		
 				if (stream != null)
 				{
 					if (stream.hasNext()){
